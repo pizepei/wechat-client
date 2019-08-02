@@ -1,0 +1,22 @@
+{
+    "name": "pizepei/wechat",
+    "description": "wechat-client",
+    "keywords": ["wechat","client"],
+    "homepage": "https://org.heil.top/",
+    "authors": [
+        {
+            "name": "pizepei",
+            "email": "pizepei@pizepei.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0.0",
+        "pizepei/helper": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "pizepei\\wechatClient\\": "src/"
+        }
+    }
+}
