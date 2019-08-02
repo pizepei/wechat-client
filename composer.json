@@ -12,6 +12,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.0.0",
+        "pizepei/encryption": "dev-master",
         "pizepei/helper": "dev-master"
     },
     "autoload": {
