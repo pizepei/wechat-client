@@ -49,14 +49,18 @@ class Client
         if (!$signature) throw new \Exception('加密错误');
         # 请求接口获取
         $res = Helper::init()->httpRequest($this->config['url'],Helper::init()->json_encode($signature));
-        # 解密数据
         if ($res['RequestInfo']['http_code'] !==200) throw new \Exception('请求错误');
 
         $body = Helper::init()->json_decode($res['body']);
         if (!$body)throw new \Exception('响应数据错误'.$res['body']);
-
-
-        return $body;
+        # 解密数据
+        if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
+        $data = $Prpcrypt->decrypt($body['encrypt_msg']);
+        if (Helper::init()->is_empty($data[1])){
+            throw new \Exception('响应qr数据错误');
+        }
+        $data = Helper::init()->json_decode($data[1]);
+        return $data;
     }
 
 
