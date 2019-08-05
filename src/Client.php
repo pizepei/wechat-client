@@ -57,9 +57,23 @@ class Client
         if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
         $data = $Prpcrypt->decrypt($body['encrypt_msg']);
         if (Helper::init()->is_empty($data[1])){
-            throw new \Exception('响应qr数据错误');
+            throw new \Exception('响应data数据错误');
         }
         $data = Helper::init()->json_decode($data[1]);
+        if (Helper::init()->is_empty($data,'url')){
+            throw new \Exception('响应url数据错误');
+        }
+        # 获取 jwt
+        $wjt = [
+            'data'=>
+                [
+                    'uid'   =>   $data['id'],
+                    'appid' =>   $data['appid'],
+                    'type'  => $data['type'],
+                ]
+        ];
+        $Client = new \pizepei\service\websocket\Client($wjt);
+        $data['jwt_url'] = 'ws://'.$Client::host.':'.$Client::port.$Client->JWT_param;
         return $data;
     }
 
