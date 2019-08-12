@@ -77,5 +77,23 @@ class Client
         return $data;
     }
 
+    public function codeAppVerify(array$body,string$id,$code,string $openid,string$ip='')
+    {
 
+        $Prpcrypt = new Prpcrypt($this->config['encoding_aes_key']);
+        $sha1 = new  SHA1();
+        if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
+        # 解密
+        $data = $Prpcrypt->decrypt($body['encrypt_msg']);
+        if (Helper::init()->is_empty($data[1])){
+            throw new \Exception('数据错误');
+        }
+        $data = Helper::init()->json_decode($data[1]);
+        if (Helper::init()->is_empty($data)){throw new \Exception('数据错误!');}
+        if ($id !== $data['id']) {throw new \Exception('非法的二维码数据');}
+        if ($code !==$data['code']) {throw new \Exception('非法的code');}
+        if ($openid !==$data['openid']) {throw new \Exception('非法的微信信息');}
+
+
+    }
 }
