@@ -88,7 +88,18 @@ class Client
         return $data;
     }
 
-    public function codeAppVerify(array$body,string$id,$code,string $openid,string$ip='')
+    /**
+     * 验证 code是否有效
+     * @param array $body      请求参数
+     * @param string $id       CODE id
+     * @param $code            CODE
+     * @param string $openid   粉丝OPENID
+     * @param string $ip       客户端
+     * @param int $deadline    验证消息的有效权限
+     * @return array|null
+     * @throws \Exception
+     */
+    public function codeAppVerify(array$body,string$id,$code,string $openid,string$ip='',$deadline=300)
     {
         $Prpcrypt = new Prpcrypt($this->config['encoding_aes_key']);
         $sha1 = new  SHA1();
