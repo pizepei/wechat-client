@@ -48,10 +48,10 @@ class Client
     {
         # 准备数据
         $data = [
-            'code'=>$code,
-            'type'=>$type,
-            'terrace'=>$terrace,
-            'param'     =>$param,//参数 可能是邮箱或者是手机号
+            'code'      =>$code,
+            'type'      =>$type,
+            'terrace'   =>$terrace,
+            'param'     =>$param,//参数 可能是邮箱或者是手机号 或者都有
         ];
         # 加密数据
         $Prpcrypt = new Prpcrypt($this->config['encoding_aes_key']);
@@ -64,6 +64,9 @@ class Client
         if ($res['RequestInfo']['http_code'] !==200) throw new \Exception('请求错误');
         $body = Helper::init()->json_decode($res['body']);
         if (!$body)throw new \Exception('响应数据错误'.$res['body']);
+        if (isset($body['error'])){
+            throw new \Exception($body['msg'].':'.$body['error']);
+        }
         # 解密数据
         if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
         $data = $Prpcrypt->decrypt($body['encrypt_msg']);
@@ -74,17 +77,6 @@ class Client
         if (Helper::init()->is_empty($data,'url')){
             throw new \Exception('响应url数据错误');
         }
-        # 获取 jwt
-        $wjt = [
-            'data'=>
-                [
-                    'uid'   =>   $data['id'],
-                    'appid' =>   $data['appid'],
-                    'type'  => $data['type'],
-                ]
-        ];
-        $Client = new \pizepei\service\websocket\Client($wjt);
-        $data['jwt_url'] = 'ws://'.$Client->host.':'.$Client->port.$Client->JWT_param;
         return $data;
     }
 
