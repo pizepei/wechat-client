@@ -64,9 +64,10 @@ class Client
         if ($res['RequestInfo']['http_code'] !==200) throw new \Exception('请求错误');
         $body = Helper::init()->json_decode($res['body']);
         if (!$body)throw new \Exception('响应数据错误'.$res['body']);
-        if (isset($body['error'])){
+        if (isset($body['error']) || !isset($body['data'])){
             throw new \Exception($body['msg'].':'.$body['error']);
         }
+        $body = $body['data'];
         # 解密数据
         if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
         $data = $Prpcrypt->decrypt($body['encrypt_msg']);
@@ -107,7 +108,7 @@ class Client
         }
         if (Helper::init()->is_empty($data)){return ['statusCode'=>100,'msg'=>'数据错误!'];}
         if ($id !== $data['id']) {  return ['statusCode'=>100,'msg'=>'非法的二维码数据!']; }
-        if ($code !==$data['code']) {   return ['statusCode'=>100,'msg'=>'非法的code!']; }
+        if ($code !==(int)$data['code']) {   return ['statusCode'=>100,'msg'=>'非法的code!']; }
         if ($openid !==$data['openid']) { return ['statusCode'=>100,'msg'=>'非法的微信信息!'];}
         return ['statusCode'=>200,'data'=>$data,'msg'=>'验证成功'];
     }
