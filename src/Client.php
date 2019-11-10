@@ -104,7 +104,7 @@ class Client
         }
         $data = Helper::init()->json_decode($data[1]);
         if ($ip !==''){
-            if ($ip !== $data['remote_ip'] ){ return ['statusCode'=>100,'msg'=>'IP变化，请重新获取二维码！'];}
+            if ($ip !== $data['remote_ip'] ){ return ['statusCode'=>100,'msg'=>'IP变化，请重新获取二维码！'.$data['remote_ip'].'->'.$ip];}
         }
         if (Helper::init()->is_empty($data)){return ['statusCode'=>100,'msg'=>'数据错误!'];}
         if ($id !== $data['id']) {  return ['statusCode'=>100,'msg'=>'非法的二维码数据!']; }
