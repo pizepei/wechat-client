@@ -67,6 +67,9 @@ class Client
         if (isset($body['error']) || !isset($body['data'])){
             throw new \Exception($body['msg'].':'.$body['error']);
         }
+        if ($body['statusCode'] ==100){
+            throw new \Exception($body['msg']);
+        }
         $body = $body['data'];
         # 解密数据
         if (!$sha1->verifySignature($this->config['token'],$body)) throw new \Exception('签名错误');
